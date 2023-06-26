@@ -1,0 +1,97 @@
+To perform CRUD (Create, Read, Update, Delete) operations with SQL Server and Node.js, you need to follow these steps:
+
+Set up the project:
+
+Create a new Node.js project or navigate to an existing one.
+Initialize the project with npm init and follow the prompts to set up your package.json file.
+Install the required dependencies by running npm install mssql to install the SQL Server driver for Node.js.
+Connect to the SQL Server database:
+
+Require the mssql module in your Node.js script.
+Create a configuration object with the necessary details to connect to your SQL Server database, such as server, database, user, and password.
+Use the configuration object to establish a connection to the database.
+
+const sql = require('mssql');
+
+const config = {
+  server: 'your_server',
+  database: 'your_database',
+  user: 'your_username',
+  password: 'your_password',
+};
+
+sql.connect(config, (err) => {
+  if (err) {
+    console.log('Error connecting to SQL Server:', err);
+  } else {
+    console.log('Connected to SQL Server');
+    // Perform CRUD operations here
+  }
+});
+
+Perform CRUD operations:
+
+Once the connection is established, you can execute SQL queries to perform CRUD operations.
+
+Below are examples of each operation:
+
+Create (INSERT):
+const insertQuery = "INSERT INTO TableName (Column1, Column2) VALUES (@Value1, @Value2)";
+
+const request = new sql.Request();
+request.input('Value1', sql.VarChar, 'Value 1');
+request.input('Value2', sql.VarChar, 'Value 2');
+
+request.query(insertQuery, (err, result) => {
+  if (err) {
+    console.log('Error inserting data:', err);
+  } else {
+    console.log('Data inserted successfully');
+  }
+});
+
+Read (SELECT):
+const selectQuery = "SELECT * FROM TableName";
+
+const request = new sql.Request();
+
+request.query(selectQuery, (err, result) => {
+  if (err) {
+    console.log('Error retrieving data:', err);
+  } else {
+    console.log('Retrieved data:', result.recordset);
+  }
+});
+Update (UPDATE):
+const updateQuery = "UPDATE TableName SET Column1 = @NewValue WHERE ConditionColumn = @Condition";
+
+const request = new sql.Request();
+request.input('NewValue', sql.VarChar, 'New Value');
+request.input('Condition', sql.Int, 1);
+
+request.query(updateQuery, (err, result) => {
+  if (err) {
+    console.log('Error updating data:', err);
+  } else {
+    console.log('Data updated successfully');
+  }
+});
+Delete (DELETE):
+const deleteQuery = "DELETE FROM TableName WHERE ConditionColumn = @Condition";
+
+const request = new sql.Request();
+request.input('Condition', sql.Int, 1);
+
+request.query(deleteQuery, (err, result) => {
+  if (err) {
+    console.log('Error deleting data:', err);
+  } else {
+    console.log('Data deleted successfully');
+  }
+});
+Close the connection:
+
+Once you have finished performing the CRUD operations, it's important to close the connection to the SQL Server database.
+sql.close();
+
+Remember to adapt the code snippets to match your specific database schema, table names, and column names.
