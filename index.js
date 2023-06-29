@@ -1,8 +1,8 @@
-const config = require('config');
+// const config = require('config');
 const helmet = require('helmet');
 const morgan = require('morgan');
 const express = require('express');
-// const customers = require('./routes/customers');
+const emps = require('./routes/emps');
 // const genres = require('./routes/genres');
 // const rentals = require('./routes/rentals');
 // const movies = require('./routes/movies');
@@ -36,7 +36,7 @@ app.get('/', (req, res) => {
   res.send('Hi');
 });
 
-// app.use('/api/customers', customers);
+app.use('/api/emps', emps);
 // app.use('/api/genres', genres);
 // app.use('/api/movies', movies);
 // app.use('/api/rentals', rentals);

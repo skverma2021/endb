@@ -95,3 +95,22 @@ Once you have finished performing the CRUD operations, it's important to close t
 sql.close();
 
 Remember to adapt the code snippets to match your specific database schema, table names, and column names.
+
+user:
+SQLTest/sqltest
+
+--creating a login
+
+CREATE LOGIN apiUserLogin WITH PASSWORD = 'theApiUser';
+
+--create a user within the specific database to provide access and define permissions
+
+USE CJIS;
+CREATE USER apiUser FOR LOGIN apiUserLogin;
+
+-- Grant user membership to a database role
+--EXEC sp_addrolemember N'db_datareader', NapiUser;
+--EXEC sp_addrolemember N'db_datawriter', N'apiUser';
+
+-- Grant explicit permissions to objects
+GRANT SELECT, INSERT, UPDATE, DELETE ON dbo.emp TO apiUser;
