@@ -67,86 +67,104 @@ router.post('/', async (req, res) => {
         'INSERT INTO emp (uId,fName,mName,sName,title,dob,gender,addLine1,cityId,mobile,eMailId,passwd) VALUES (@uId,@fName,@mName,@sName,@title,@dob,@gender,@addLine1,@cityId,@mobile,@eMailId,@passwd)'
       );
 
-    res.status(201).send('Employee data inserted successfully');
+    // res;
+    res
+      .status(201)
+      .send(`Employee data inserted successfully ${JSON.stringify(req.body)}`);
   } catch (err) {
     console.error('Error inserting employee data:', err);
     res.status(500).send('Internal Server Error');
   }
 });
 
-// router.post('/', (req, res) => {
-//   const { error } = validate(req.body);
-//   if (error)
-//     return res.status(400).send(`Invalid input: ${error.details[0].message}`);
+// PUT route to update employee data
+router.put('/:id', async (req, res) => {
+  try {
+    const { error } = validate(req.body);
+    if (error)
+      return res.status(400).send(`Invalid input: ${error.details[0].message}`);
+    const { id } = req.params;
+    // console.log(id);
+    const {
+      uId,
+      fName,
+      mName,
+      sName,
+      title,
+      dob,
+      gender,
+      addLine1,
+      cityId,
+      mobile,
+      eMailId,
+      passwd,
+    } = req.body;
 
-//   var sql = `INSERT INTO customers (name, isGold, phone) VALUES ('${req.body.name}', '${req.body.isGold}', '${req.body.phone}')`;
-//   con.query(sql, function (err, result) {
-//     if (err)
-//       return res
-//         .status(400)
-//         .send(`record could not be inserted: ${err.message}`);
-//     console.log('1 record inserted');
-//     res.send(`a customer created with ID:${result.insertId}`);
-//   });
-// });
+    // Create a SQL Server connection pool
+    const pool = await sql.connect(config);
 
-// //  Update user with id
-// router.put('/:id', function (req, res) {
-//   if (!(parseInt(req.params.id) > 0))
-//     return res.status(400).send(`invalid parameter: ${req.params.id}`);
-//   const { error } = validate(req.body);
-//   if (error)
-//     return res.status(400).send(`Invalid input: ${error.details[0].message}`);
-//   con.query(
-//     'UPDATE customers SET name = ?, isGold = ?, phone = ? WHERE id = ?',
-//     [req.body.name, req.body.isGold, req.body.phone, req.params.id],
-//     function (err, result, fields) {
-//       if (err)
-//         return res
-//           .status(400)
-//           .send(`record could not be updated: ${err.message}`);
-//       if (result.changedRows !== 0) {
-//         console.log('1 record updated');
-//       }
-//       res.send(`Rows changed:${result.changedRows}`);
-//     }
-//   );
-// });
+    // Update employee data in the Employees table
+    await pool
+      .request()
+      .input('id', sql.Int, id)
+      .input('uId', sql.BigInt, uId)
+      .input('fName', sql.VarChar(50), fName)
+      .input('mName', sql.VarChar(50), mName)
+      .input('sName', sql.VarChar(50), sName)
+      .input('title', sql.NChar(3), title)
+      .input('dob', sql.Date, dob)
+      .input('gender', sql.NChar(1), gender)
+      .input('addLine1', sql.VarChar(100), addLine1)
+      .input('cityId', sql.Int, cityId)
+      .input('mobile', sql.BigInt, mobile)
+      .input('eMailId', sql.VarChar(150), eMailId)
+      .input('passwd', sql.VarChar(150), passwd)
+      .query(
+        'UPDATE emp SET uId = @uId, fName = @fName, mName = @mName, sName = @sName, title = @title, dob = @dob, gender = @gender,addLine1 = @addLine1, cityId = @cityId, mobile = @mobile, eMailId = @eMailId,passwd = @passwd WHERE id = @id'
+      );
 
-// //  Delete user
-// router.delete('/:id', function (req, res) {
-//   if (!(parseInt(req.params.id) > 0))
-//     return res.status(400).send(`invalid parameter: ${req.params.id}`);
-//   con.query(
-//     'DELETE FROM customers WHERE id = ?',
-//     [req.params.id],
-//     function (err, result, fields) {
-//       if (err)
-//         return res
-//           .status(400)
-//           .send(`record could not be deleted: ${err.message}`);
-//       if (result.affectedRows !== 0) console.log('1 record deleted');
-//       res.send(`Affected Rows: ${result.affectedRows}`);
-//     }
-//   );
-// });
+    res.send(`Employee data updated successfully ${JSON.stringify(req.body)}`);
+  } catch (err) {
+    console.error('Error updating employee data:', err);
+    res.status(500).send('Internal Server Error');
+  }
+});
+
+// DELETE route to delete a record from the Employee table
+router.delete('/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    // Create a SQL Server connection pool
+    const pool = await sql.connect(config);
+
+    // Delete the record from the Employee table
+    await pool
+      .request()
+      .input('id', sql.Int, id)
+      .query('DELETE FROM emp WHERE Id = @Id');
+
+    res.send('Record deleted successfully');
+  } catch (err) {
+    console.error('Error deleting record:', err);
+    res.status(500).send('Internal Server Error');
+  }
+});
 
 // // Retrieve user with id
-// router.get('/:id', function (req, res) {
-//   if (!(parseInt(req.params.id) > 0))
-//     return res.status(400).send(`invalid parameter: ${req.params.id}`);
-//   con.query(
-//     'SELECT * FROM customers where id=?',
-//     req.params.id,
-//     function (err, result, fields) {
-//       if (err)
-//         return res
-//           .status(400)
-//           .send(`record could not be retrieved: ${err.message}`);
-//       console.log('1 record retrieved');
-//       res.send(result);
-//     }
-//   );
-// });
+router.get('/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const pool = await sql.connect(config);
+    const result = await pool
+      .request()
+      .input('id', sql.Int, id)
+      .query('SELECT * FROM emp where id = @id');
+    res.json(result.recordset);
+  } catch (err) {
+    console.error('Error fetching employees:', err);
+    res.status(500).send('Internal Server Error');
+  }
+});
 
 module.exports = router;
