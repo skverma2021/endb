@@ -151,7 +151,7 @@ router.delete('/:id', async (req, res) => {
   }
 });
 
-// // Retrieve user with id
+// GET one Employee
 router.get('/:id', async (req, res) => {
   try {
     const { id } = req.params;
