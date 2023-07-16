@@ -3,9 +3,9 @@ const helmet = require('helmet');
 const morgan = require('morgan');
 const express = require('express');
 const emps = require('./routes/emps');
-// const genres = require('./routes/genres');
-// const rentals = require('./routes/rentals');
-// const movies = require('./routes/movies');
+const discipline = require('./routes/discipline');
+const designation = require('./routes/designation');
+const department = require('./routes/department');
 // const users = require('./routes/users');
 // const auths = require('./routes/auths');
 const app = express();
@@ -46,9 +46,9 @@ app.get('/', (req, res) => {
 });
 
 app.use('/api/emps', emps);
-// app.use('/api/genres', genres);
-// app.use('/api/movies', movies);
-// app.use('/api/rentals', rentals);
+app.use('/api/discipline', discipline);
+app.use('/api/designation', designation);
+app.use('/api/department', department);
 // app.use('/api/users', users);
 // app.use('/api/auths', auths);
 

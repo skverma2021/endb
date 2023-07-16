@@ -14,7 +14,11 @@ const config = {
 router.get('/', async (req, res) => {
   try {
     const pool = await sql.connect(config);
-    const result = await pool.request().query('SELECT * FROM emp');
+    const result = await pool
+      .request()
+      .query(
+        'SELECT emp.id, emp.empFullName, emp.dob, emp.addLine1, emp.mobile, emp.eMailId, cities.cityName AS theCity, deptt.name AS theDeptt, designation.description AS theDesig FROM     emp INNER JOIN cities ON emp.cityId = cities.id INNER JOIN deptt ON emp.curDeptt = deptt.id INNER JOIN designation ON emp.curDesig = designation.id'
+      );
     res.json(result.recordset);
   } catch (err) {
     console.error('Error fetching employees:', err);
