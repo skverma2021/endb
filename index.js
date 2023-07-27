@@ -6,9 +6,13 @@ const emps = require('./routes/emps');
 const discipline = require('./routes/discipline');
 const designation = require('./routes/designation');
 const department = require('./routes/department');
-// const users = require('./routes/users');
-// const auths = require('./routes/auths');
+const cities = require('./routes/cities');
+const clients = require('./routes/clients');
+const jobs = require('./routes/jobs');
+
+const cors = require('cors');
 const app = express();
+app.use(cors());
 
 // const logger = winston.createLogger({
 //   level: 'info',
@@ -32,14 +36,18 @@ app.use(helmet());
 
 const port = process.env.PORT || 3000;
 
-app.use(function (req, res, next) {
-  res.header('Access-Control-Allow-Origin', '*');
-  res.header(
-    'Access-Control-Allow-Headers',
-    'Origin, X-Requested-With, Content-Type, Accept'
-  );
-  next();
-});
+// app.use(function (req, res, next) {
+//   res.header('Access-Control-Allow-Origin', '*');
+//   res.header(
+//     'Access-Control-Allow-Headers',
+//     'Origin, X-Requested-With, Content-Type, Accept'
+//   );
+//   next();
+// });
+
+// Access-Control-Allow-Origin: http://localhost:3001
+// Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS
+// Access-Control-Allow-Origin and Access-Control-Allow-Methods.
 
 app.get('/', (req, res) => {
   res.send('Hi');
@@ -49,8 +57,9 @@ app.use('/api/emps', emps);
 app.use('/api/discipline', discipline);
 app.use('/api/designation', designation);
 app.use('/api/department', department);
-// app.use('/api/users', users);
-// app.use('/api/auths', auths);
+app.use('/api/cities', cities);
+app.use('/api/clients', clients);
+app.use('/api/jobs', jobs);
 
 app.listen(port, () =>
   console.log(`the server started listening at port: ${port}`)

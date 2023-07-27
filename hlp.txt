@@ -114,3 +114,136 @@ CREATE USER apiUser FOR LOGIN apiUserLogin;
 
 -- Grant explicit permissions to objects
 GRANT SELECT, INSERT, UPDATE, DELETE ON dbo.emp TO apiUser;
+///////////////////////////////////////////////////////////////////
+
+npm install @material-ui/core @material-ui/icons react-table
+
+///////////////////////////////////////////////////////////////////
+
+import React, { useMemo } from 'react';
+import { useTable, useSortBy, usePagination } from 'react-table';
+import { Table, TableHead, TableBody, TableRow, TableCell, TableContainer, Paper, TablePagination } from '@material-ui/core';
+
+const EmployeeTable = ({ data }) => {
+  const columns = useMemo(
+    () => [
+      { Header: 'ID', accessor: 'uId' },
+      { Header: 'Name', accessor: 'name' },
+      { Header: 'Date of Birth', accessor: 'dob' },
+      { Header: 'City', accessor: 'city' },
+      { Header: 'Mobile', accessor: 'mobile' },
+    ],
+    []
+  );
+
+  const {
+    getTableProps,
+    getTableBodyProps,
+    headerGroups,
+    page,
+    nextPage,
+    previousPage,
+    canNextPage,
+    canPreviousPage,
+    pageOptions,
+    state: { pageIndex, pageSize },
+    gotoPage,
+    setPageSize,
+  } = useTable(
+    {
+      columns,
+      data,
+      initialState: { pageIndex: 0, pageSize: 5 }, // Initial page index and size
+    },
+    useSortBy,
+    usePagination
+  );
+
+  return (
+    <>
+      <TableContainer component={Paper}>
+        <Table {...getTableProps()}>
+          <TableHead>
+            {headerGroups.map((headerGroup) => (
+              <TableRow {...headerGroup.getHeaderGroupProps()}>
+                {headerGroup.headers.map((column) => (
+                  <TableCell {...column.getHeaderProps(column.getSortByToggleProps())}>
+                    {column.render('Header')}
+                    {column.isSorted ? (column.isSortedDesc ? ' 🔽' : ' 🔼') : ''}
+                  </TableCell>
+                ))}
+              </TableRow>
+            ))}
+          </TableHead>
+          <TableBody {...getTableBodyProps()}>
+            {page.map((row) => (
+              <TableRow {...row.getRowProps()}>
+                {row.cells.map((cell) => (
+                  <TableCell {...cell.getCellProps()}>{cell.render('Cell')}</TableCell>
+                ))}
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+
+      {/* Pagination */}
+      <TablePagination
+        rowsPerPageOptions={[5, 10, 20]}
+        component="div"
+        count={data.length}
+        rowsPerPage={pageSize}
+        page={pageIndex}
+        onPageChange={(event, newPage) => gotoPage(newPage)}
+        onRowsPerPageChange={(event) => {
+          setPageSize(Number(event.target.value));
+        }}
+      />
+    </>
+  );
+};
+
+export default EmployeeTable;
+////////////////////////////////////////////////////////////////
+import React from 'react';
+import EmployeeTable from './EmployeeTable';
+
+const data = [
+  { uId: 1, name: 'John Doe', dob: '1990-05-15', city: 'New York', mobile: '123-456-7890' },
+  { uId: 2, name: 'Jane Smith', dob: '1985-09-22', city: 'Los Angeles', mobile: '987-654-3210' },
+  // Add more data here...
+];
+
+const App = () => {
+  return (
+    <div>
+      <h1>Employee Table</h1>
+      <EmployeeTable data={data} />
+    </div>
+  );
+};
+
+export default App;
+//////////////////////////////////////////////////////
+
+why use React-Table when material UI provides the same?
+ChatGPT
+You are correct that Material-UI provides its own table component (<Table>, <TableRow>, <TableCell>, etc.) that supports basic functionality. Material-UI tables are suitable for simpler use cases where you need a straightforward table with minimal features.
+
+However, if you require more advanced features like sorting, filtering, and pagination, React-Table is a more powerful and flexible library specifically designed to handle complex data tables in React applications. It abstracts away the complexity of managing state and interactions in a table and allows you to focus on defining columns and data.
+
+Here are some reasons why you might want to use React-Table over Material-UI's built-in table:
+
+Rich Features: React-Table provides extensive features out of the box, including sorting, filtering, pagination, column resizing, and more. While Material-UI's table offers basic sorting, React-Table makes it easier to implement additional features without having to write custom code.
+
+Performance Optimization: React-Table is designed to be efficient in handling large datasets. It uses various optimizations like virtualization to render only the visible rows, minimizing the DOM updates and improving performance.
+
+Customization: React-Table is highly customizable, allowing you to create custom cells, headers, and even the entire rendering logic. This flexibility is especially useful when dealing with complex data and UI requirements.
+
+Maintainability: With React-Table, you can manage the table's state and behavior separately from your main component, making the codebase cleaner and more maintainable.
+
+Community and Support: React-Table has a dedicated community and active development, which means regular updates, bug fixes, and new features.
+
+It's essential to consider the specific requirements of your project when choosing between using Material-UI's built-in table or a more specialized library like React-Table. If your use case is relatively simple and requires only basic table functionality, using Material-UI's table component is a reasonable choice. However, if you need more advanced features and better control over your table, React-Table is a robust option worth considering.
+
+//////////////////////////////////////////////////////////
