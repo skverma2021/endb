@@ -9,6 +9,12 @@ const department = require('./routes/department');
 const cities = require('./routes/cities');
 const clients = require('./routes/clients');
 const jobs = require('./routes/jobs');
+const ExStages = require('./routes/ExStages');
+const WorkPlans = require('./routes/WorkPlans');
+const empBookHead = require('./routes/book');
+const bookHeads = require('./routes/bookHeads');
+const bookDates = require('./routes/bookDates');
+const booking = require('./routes/booking');
 
 const cors = require('cors');
 const app = express();
@@ -60,6 +66,14 @@ app.use('/api/department', department);
 app.use('/api/cities', cities);
 app.use('/api/clients', clients);
 app.use('/api/jobs', jobs);
+app.use('/api/ExStages', ExStages);
+app.use('/api/WorkPlans', WorkPlans);
+app.use('/api/empBookHead', empBookHead);
+app.use('/api/bookHeads', bookHeads);
+app.use('/api/bookDates', bookDates);
+app.use('/api/booking', booking);
+
+// app.use('/api/WorkPlans/jobId', WorkPlans);
 
 app.listen(port, () =>
   console.log(`the server started listening at port: ${port}`)
